@@ -36,16 +36,24 @@ PDF_LOCATOR = ""
 def main():
 
     # Declaramos el Context Manager (with)
-    with sync_playwright as p:
+    with sync_playwright() as p:
 
         # Llamamos a (p) que es el controlador principal de Playwright para lanzar el navegador
-        browser = p.chromium.launch(headless=False) # True  = navegador invisible/ False = visible
+        browser = p.chromium.launch_persistent_context(user_data_dir="perfil",headless=False) # True  = navegador invisible/ False = visible
 
         # Creacion de una nueva pagina
         page = browser.new_page()
 
         # Vamos a la web donde haremos el scraping
         page.goto(URL_TO_SCRAP)
+
+        # Eperamos a que cargue los elementos que necesitamos para obtener los datos
+        page.locator(FATHER_LOCATOR).first.wait_for(state="visible")
+
+        
+        # Llamada a la funcion que va a scrapear la informacion
+
+        # Llamada a la funcion que va a guardar los resultados en un CSV
 
 
         # Cerramos el navegador tras realizar la tarea 

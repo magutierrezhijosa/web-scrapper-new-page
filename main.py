@@ -39,7 +39,7 @@ def main():
     with sync_playwright() as p:
 
         # Llamamos a (p) que es el controlador principal de Playwright para lanzar el navegador
-        context = p.chromium.launch_persistent_context(user_data_dir="perfil",headless=False) # True  = navegador invisible/ False = visible
+        context = p.chromium.launch_persistent_context(user_data_dir="perfil",headless=False,channel= "chrome",user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36") # True  = navegador invisible/ False = visible
 
         # Creacion de una nueva pagina
         page = context.new_page()
@@ -48,7 +48,7 @@ def main():
         page.goto(URL_TO_SCRAP)
 
         # Esperamos a que la red este inactiva y no haya mas peticiones
-        page.wait_for_load_state("networkidle")
+        page.wait_for_load_state("domcontentloaded")
 
         # Eperamos a que cargue los elementos que necesitamos para obtener los datos
         page.locator(FATHER_LOCATOR).first.wait_for(state="visible")

@@ -39,17 +39,22 @@ def main():
     with sync_playwright() as p:
 
         # Llamamos a (p) que es el controlador principal de Playwright para lanzar el navegador
-        browser = p.chromium.launch_persistent_context(user_data_dir="perfil",headless=False) # True  = navegador invisible/ False = visible
+        context = p.chromium.launch_persistent_context(user_data_dir="perfil",headless=False) # True  = navegador invisible/ False = visible
 
         # Creacion de una nueva pagina
-        page = browser.new_page()
+        page = context.new_page()
 
         # Vamos a la web donde haremos el scraping
         page.goto(URL_TO_SCRAP)
 
+        # Esperamos a que la red este inactiva y no haya mas peticiones
+        page.wait_for_load_state("networkidle")
+
         # Eperamos a que cargue los elementos que necesitamos para obtener los datos
         page.locator(FATHER_LOCATOR).first.wait_for(state="visible")
 
+        # Pagina cargada correctamente
+        print("Página cargada correctamente")
         
         # Llamada a la funcion que va a scrapear la informacion
 
@@ -57,7 +62,7 @@ def main():
 
 
         # Cerramos el navegador tras realizar la tarea 
-        browser.close()
+        context.close()
 
 # Ejecutamos la funcion main() al ejecutar este archivo
 if __name__ == "__main__":

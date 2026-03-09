@@ -6,8 +6,7 @@
 
 
 """
-from playwright.sync_api import sync_playwright
-#  Importamos la libreria para hacer las pruebas con stealth
+from camoufox.sync_api import Camoufox
 
 ##########################################################
 #                     CONSTANTES                         #
@@ -32,35 +31,17 @@ DATE_LOCATOR = ""
 # Localizazdor de la etiqueta donde vamos a encontrar la URL_PDF
 PDF_LOCATOR = ""
 
+CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
+
 
 # Declaramos la funcion principal de nuestro script
 def main():
 
     # Declaramos el Context Manager (with)
-    with sync_playwright() as p:
-
-        # Llamamos a (p) que es el controlador principal de Playwright para lanzar el navegador
-        context = p.chromium.launch_persistent_context(
-            user_data_dir="perfil",
-            headless=False,
-            channel= "chrome",
-            args=[
-                "--disable-blink-features=AutomationControlled",
-                "--no-sandbox",
-                "--disable-dev-shm-usage",
-            ],
-            ignore_default_args=["--enable-automation"],
-        ) # True  = navegador invisible/ False = visible
+    with Camoufox(headless=False, executable_path=CAMOUFOX_PATH) as browser:
 
         # Creacion de una nueva pagina
-        page = context.new_page()
-
-        page.add_init_script("""
-            Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
-            Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3]});
-            Object.defineProperty(navigator, 'languages', {get: () => ['es-ES', 'es']});
-            window.chrome = { runtime: {} };
-        """)
+        page = browser.new_page()
 
         # Vamos a la web donde haremos el scraping
         page.goto(URL_TO_SCRAP)
@@ -74,14 +55,7 @@ def main():
         # Pagina cargada correctamente
         print("Página cargada correctamente")
             
-        # Llamada a la funcion que va a scrapear la informacion
-
-        # Llamada a la funcion que va a guardar los resultados en un CSV
-
-
-        # Cerramos el navegador tras realizar la tarea 
-        context.close()
-
+        
 # Ejecutamos la funcion main() al ejecutar este archivo
 if __name__ == "__main__":
 

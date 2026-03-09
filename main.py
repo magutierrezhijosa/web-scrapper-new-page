@@ -7,7 +7,8 @@
 
 """
 from playwright.sync_api import sync_playwright
-from playwright_stealth import stealth_sync
+#  Importamos la libreria para hacer las pruebas con stealth
+from playwright_stealth import Stealth
 
 ##########################################################
 #                     CONSTANTES                         #
@@ -40,10 +41,19 @@ def main():
     with sync_playwright() as p:
 
         # Llamamos a (p) que es el controlador principal de Playwright para lanzar el navegador
-        context = p.chromium.launch_persistent_context(user_data_dir="perfil",headless=False,channel= "chrome",user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36") # True  = navegador invisible/ False = visible
+        context = p.chromium.launch_persistent_context(
+            user_data_dir="perfil",
+            headless=False,
+            channel= "chrome",
+            args=[
+                "--disable-blink-features=AutomationControlled",
+            ]
+        ) # True  = navegador invisible/ False = visible
 
         # Creacion de una nueva pagina
         page = context.new_page()
+
+        stealth_sync(page)  # 👈 Aplica el stealth antes del goto
 
         # Vamos a la web donde haremos el scraping
         page.goto(URL_TO_SCRAP)

@@ -8,7 +8,6 @@
 """
 from playwright.sync_api import sync_playwright
 #  Importamos la libreria para hacer las pruebas con stealth
-from playwright_stealth import Stealth
 
 ##########################################################
 #                     CONSTANTES                         #
@@ -47,13 +46,21 @@ def main():
             channel= "chrome",
             args=[
                 "--disable-blink-features=AutomationControlled",
-            ]
+                "--no-sandbox",
+                "--disable-dev-shm-usage",
+            ],
+            ignore_default_args=["--enable-automation"],
         ) # True  = navegador invisible/ False = visible
 
         # Creacion de una nueva pagina
         page = context.new_page()
 
-        stealth_sync(page)  # 👈 Aplica el stealth antes del goto
+        page.add_init_script("""
+            Object.defineProperty(navigator, 'webdriver', {get: () => undefined});
+            Object.defineProperty(navigator, 'plugins', {get: () => [1, 2, 3]});
+            Object.defineProperty(navigator, 'languages', {get: () => ['es-ES', 'es']});
+            window.chrome = { runtime: {} };
+        """)
 
         # Vamos a la web donde haremos el scraping
         page.goto(URL_TO_SCRAP)
@@ -66,7 +73,7 @@ def main():
 
         # Pagina cargada correctamente
         print("Página cargada correctamente")
-        
+            
         # Llamada a la funcion que va a scrapear la informacion
 
         # Llamada a la funcion que va a guardar los resultados en un CSV

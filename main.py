@@ -43,11 +43,14 @@ def main():
         # Creacion de una nueva pagina
         page = browser.new_page()
 
-        # Vamos a la web donde haremos el scraping
-        page.goto(URL_TO_SCRAP)
+        # Esperamos un momento antes de navegar para parecer más humanos
+        page.wait_for_timeout(2000)
 
-        # Esperamos a que la red este inactiva y no haya mas peticiones
-        page.wait_for_load_state("domcontentloaded")
+        # Vamos a la web donde haremos el scraping
+        page.goto(URL_TO_SCRAP, wait_until="domcontentloaded")
+
+        page.wait_for_timeout(3000)  # Esperamos tras cargar
+  
 
         # Eperamos a que cargue los elementos que necesitamos para obtener los datos
         page.locator(FATHER_LOCATOR).first.wait_for(state="visible")

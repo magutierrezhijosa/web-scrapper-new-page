@@ -2,7 +2,9 @@
 """
         Pruebas que hice para evitar el anti-bot
         1- Probar con el perfil de Playright en el navegador 
-
+        2- Probar con el perfil prestablecido diferente al de Playright
+        3- Probar con la libreria de Camoufox 
+        ? Probar a pedir a la API que me de la  informacion directamente
     
 
 
@@ -50,15 +52,14 @@ def main():
         # Vamos a la web donde haremos el scraping
         page.goto(URL_TO_SCRAP, wait_until="domcontentloaded")
 
-        page.wait_for_timeout(3000)  # Esperamos tras cargar
+        # Esperamos tras cargar
+        page.wait_for_timeout(3000)  
   
-
         # Eperamos a que cargue los elementos que necesitamos para obtener los datos
         page.locator(FATHER_LOCATOR).first.wait_for(state="visible")
 
         # Pagina cargada correctamente
-        print("Página cargada correctamente")
-            
+        print("Página cargada correctamente")           
         
 # Ejecutamos la funcion main() al ejecutar este archivo
 if __name__ == "__main__":

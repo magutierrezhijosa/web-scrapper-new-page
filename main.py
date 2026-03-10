@@ -1,6 +1,7 @@
 
 """
-    Plantilla de Web Scrapper con Playwright
+        Pruebas que hice para evitar el anti-bot
+        1- Probar con el perfil de Playright en el navegador 
 
     
 

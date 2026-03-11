@@ -37,10 +37,10 @@ COOKIES_FILE = "cookies.json"
 FATHER_LOCATOR = "div.ds-1col.clearfix.search-results-container.margin-bottom-sm"
 
 # Localizador de la etiqueta donde se va a encontrar el TITULO
-TITLE_LOCATOR = ""
+TITLE_LOCATOR = "h3.h3 a"
 
 # Localizador de la etiqueta donde vamos a encontrar la FECHA
-DATE_LOCATOR = ""
+DATE_LOCATOR = "span.post-date"
 
 # Localizazdor de la etiqueta donde vamos a encontrar la URL_PDF
 PDF_LOCATOR = ""

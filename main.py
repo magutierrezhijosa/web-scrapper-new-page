@@ -9,7 +9,15 @@
 
 
 """
+# Importamos la libreria de CAMOUFOX 
 from camoufox.sync_api import Camoufox
+
+# Importamos la libreria de json
+import json
+
+# Importamos la libreria de os
+import os
+
 
 ##########################################################
 #                     CONSTANTES                         #
@@ -36,6 +44,30 @@ PDF_LOCATOR = ""
 
 CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
 
+##########################################################
+#                     FUNCIONES                          #
+##########################################################
+
+# Definimos la funcion que va a GUARDAR COOKIES cuando pasemos el captcha mannualmente
+def guardar_cookies(browser):
+
+    """Abre el navegador , espera a que pases el captcha manualmente y guarda la cookies """
+    page = browser.new_page()
+    page.goto(URL_TO_SCRAP, wait_until="domcontentloaded")
+
+    print("⚠️  Pasa el captcha manualmente en el navegador...")
+    print("⚠️  Cuando la página haya cargado completamente pulsa ENTER aquí.")
+    input()
+
+    # Extraemos las COOKIES de la sesion actual 
+    cookies = page.context.cookies()
+
+    # Creamos el CONTEXT MANAGER y guardamos las COOKIES en un JSON
+    with open(COOKIES_FILE, "w") as f:
+        json.dump(cookies,f)
+
+    print("✅ Cookies guardadas correctamente.")
+    return page
 
 # Declaramos la funcion principal de nuestro script
 def main():

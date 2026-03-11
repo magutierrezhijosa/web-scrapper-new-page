@@ -69,6 +69,34 @@ def guardar_cookies(browser):
     print("✅ Cookies guardadas correctamente.")
     return page
 
+
+# Definimos la funcion que cargara las COOKIES para que no nos vuelva a pedir el captcha en futuras ocasiones
+def cargar_cookies(browser):
+
+    """Carga las cookies guardadas """
+    with open(COOKIES_FILE,"r") as f:
+        
+        # Guardamos la COOKIES deserializa en una lista de Python.
+        cookies = json.load(f)
+
+    # Abrimos una nueva pagina een el navegador 
+    page = browser.new_page()
+
+    ######## IMPORTANTE CARGAR LAS COOKIES ANTES DE NAVEGAR ######
+    # Injectamos las COOKIES en el contexto del navegador 
+    page.context.add_cookies(cookies)
+
+    # Esperamos 2 segundos para aseguurar que la s COOKIES se han cargado correctamente
+    page.wait_for_tiemout(2000)
+
+    # Navegamos a la pagina que queremos hacer el Scraping 
+    page.goto(URL_TO_SCRAP, wait_until="domcontentloaded")
+
+    # Pausa para que la pagina le de tiempo a renderizarse
+    page.wait_for_timeout(3000)
+    
+    return page
+
 # Declaramos la funcion principal de nuestro script
 def main():
 

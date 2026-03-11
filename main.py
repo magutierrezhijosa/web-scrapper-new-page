@@ -25,9 +25,12 @@ import os
 
 # Url donde vamos a empezar a realizar el scraping
 URL_TO_SCRAP  = "https://www.wri.org/resources/type/research-65?query=&sort_by=created"
+
 # Encabezados de las columnas de nuestro futuro archivo CSV
 CSV_HEADERS = ["Título", "Fecha", "URL_PDF"]
 
+# Constante donde vamos a guardar las cookies
+COOKIES_FILE = "cookies.json"
 ######################## LOCALIZADORES ###################
 
 # Localizador padre que engloba todos los elementos que queremos scrapear
@@ -87,14 +90,14 @@ def cargar_cookies(browser):
     page.context.add_cookies(cookies)
 
     # Esperamos 2 segundos para aseguurar que la s COOKIES se han cargado correctamente
-    page.wait_for_tiemout(2000)
+    page.wait_for_timeout(2000)
 
     # Navegamos a la pagina que queremos hacer el Scraping 
     page.goto(URL_TO_SCRAP, wait_until="domcontentloaded")
 
     # Pausa para que la pagina le de tiempo a renderizarse
     page.wait_for_timeout(3000)
-    
+
     return page
 
 # Declaramos la funcion principal de nuestro script
@@ -103,17 +106,14 @@ def main():
     # Declaramos el Context Manager (with)
     with Camoufox(headless=False, executable_path=CAMOUFOX_PATH) as browser:
 
-        # Creacion de una nueva pagina
-        page = browser.new_page()
+        # Si no hay COOKIES guardadas las generamos manualmente
+        if not os.path.exists(COOKIES_FILE):
+            
+            page = guardar_cookies(browser) 
 
-        # Esperamos un momento antes de navegar para parecer más humanos
-        page.wait_for_timeout(2000)
+        else:
 
-        # Vamos a la web donde haremos el scraping
-        page.goto(URL_TO_SCRAP, wait_until="domcontentloaded")
-
-        # Esperamos tras cargar
-        page.wait_for_timeout(3000)  
+            page = cargar_cookies(browser)
   
         # Eperamos a que cargue los elementos que necesitamos para obtener los datos
         page.locator(FATHER_LOCATOR).first.wait_for(state="visible")

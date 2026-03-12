@@ -110,6 +110,35 @@ def cargar_cookies(browser):
 
     return page
 
+# Definimos la funcion que va a recorrer todos los elementos de la pagina y recoger los valores de TITULO , FECHA , URL_DETALLE
+def scrapear_listado(page):
+
+    # Obtenemos todos los elementos de la pagina actual como una lista
+    elementos = page.locator(FATHER_LOCATOR).all()
+
+    # Creamos un variable para guardar los resultados
+    resultados = []
+
+    # Iniciamos un bucle para reecorrer todos los elementos
+    for elemento in elementos:
+
+        # Extraemos el TITULO del elemento 
+        titulo = elemento.locator(TITLE_LOCATOR).text_content().strip()
+
+        # Extraemos la FECHA del elemento 
+        fecha = elemento.locator(DATE_LOCATOR).text_content().strip()
+
+        # Extraemos la URL de detalle y la completamos con la BASE_URL
+        url_detalle = BASE_URL + elemento.locator(TITLE_LOCATOR).get_attribute("href")
+
+        # Guardamos los datos en un diccionario y lo agregamos a la lista
+        resultados.append({
+            "titulo": titulo,
+            "fecha": fecha,
+            "url_detalle": url_detalle
+        })
+
+    return resultados
 # Declaramos la funcion principal de nuestro script
 def main():
 

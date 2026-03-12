@@ -156,8 +156,17 @@ def scrapear_detalle(page, url_detalle):
 
     """Navega a la página de detalle, hace click en Download y extrae la URL del PDF."""
 
-    # Navegamos a la pagina de detalle del elemento
-    page.goto(url_detalle, wait_until="domcontentloaded")
+    # Intentamos navegar hasta 3 veces por si hay timeout
+    for intento in range(3):
+        try:
+            page.goto(url_detalle, wait_until="domcontentloaded", timeout=60000)
+            break
+        except:
+            print(f"⚠️  Timeout navegando a {url_detalle}, intento {intento + 1}/3")
+            if intento == 2:
+                return None
+            page.wait_for_timeout(3000)
+    
     page.wait_for_timeout(2000)
 
     # Comprobamos si es de tipo B Directo el boton DOWNLOAD
@@ -209,7 +218,7 @@ def scrapear_todas_las_paginas(page):
     numero_pagina = 0
 
     # Cambia esto en scrapear_todas_las_paginas para limitar las páginas en pruebas
-    MAX_PAGINAS = 2  # Cambia a None para scrappear todo
+    MAX_PAGINAS = None  # Cambia a None para scrappear todo
 
     # Creamos un buclee While que mientras encuentra elemento los scrapea sino para y al final de cada iteracion incrementa el numero de pagina
     while True:
@@ -299,11 +308,8 @@ def main():
         # Guardamos los resultados en CSV
         guardar_csv(resultados)
 
-        for r in resultados:
-            print(r)
-
         # Pagina cargada correctamente
-        print("Página cargada correctamente")           
+        print(f"✅ Script finalizado. {len(resultados)} elementos guardados en {CSV_FILE}")       
         
 # Ejecutamos la funcion main() al ejecutar este archivo
 if __name__ == "__main__":

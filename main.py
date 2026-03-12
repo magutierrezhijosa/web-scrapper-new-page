@@ -166,7 +166,53 @@ def scrapear_detalle(page, url_detalle):
 
 
 # Definimos la funcion que va encargarse de la paginacion 
+def scrapear_todas_las_paginas(page):
 
+    """Recorre todas las páginas del listado y extrae todos los datos."""
+
+    # Declaramos la variable donde guardaremos todos los resultados de todas la paginas 
+    todos_los_resultados = []
+
+    # Declaramos la variable qque sigue el conteo de la paginacion
+    numero_pagina = 0
+
+    # Creamos un buclee While que mientras encuentra elemento los scrapea sino para y al final de cada iteracion incrementa el numero de pagina
+    while True:
+
+        # Mostramos en consola la pagina por la que vamos 
+        print(f"📄 Scrapeando página {numero_pagina}...")
+
+        # Navegamos a la pagina actual del listado 
+        page.goto(URL_TO_SCRAP.format(numero_pagina),wait_until="domcontentloaded")
+        page.wait_for_timeout(2000)
+
+        # Comprobamos si hay elementos en la pagina 
+        # Si no hay elemento es que hemos llegado al final 
+        if page.locator(FATHER_LOCATOR).count() == 0:
+
+            print("✅ No hay más páginas.")
+            break
+
+        # Scrapeamos lso resultados de la pagina 
+        resultados_pagina = scrapear_listado(page)
+
+        # Para cada elemento entramos en detalle y extraemos el PDF
+        for resultado in resultados_pagina:
+
+            # Recogemos la URL del PDF en una una variable 
+            url_pdf = scrapear_detalle(page,resultado["url_detalle"])
+
+            # Agregamos la URL del PDF al resultado
+            resultado["url_pdf"] = url_pdf 
+
+            print(f"✅ Scrapeado: {resultado['titulo'][:50]}...")   
+
+            # Añadimos el resultado completo a la lista total
+            todos_los_resultados.append(resultado)
+
+        numero_pagina += 1
+
+    return todos_los_resultados
 
 # Declaramos la funcion principal de nuestro script
 def main():

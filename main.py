@@ -139,6 +139,29 @@ def scrapear_listado(page):
         })
 
     return resultados
+
+# Definimos la funcion que va a ir a cada pagina unitaria del elemento y guardara el href del PDF para luego guardarlo
+def scrapear_detalle(page, url_detalle):
+
+    """Navega a la página de detalle, hace click en Download y extrae la URL del PDF."""
+
+    # Navegamos a la pagina de detalle del elemento
+    page.goto(url_detalle, wait_until="domcontentloaded")
+    page.wait_for_timeout(2000)
+
+    # Hacemos click en el boton de DOWNLOAD
+    page.locator(DOWNLOAD_LOCATOR).click()
+    page.wait_for_timeout(2000)
+
+    # Hacemos click en "No thanks. Proceed to download." para saltar el login
+    page.locator(SKIP_LOGIN_LOCATOR).click()
+    page.wait_for_timeout(2000)
+
+    # Extraemos la URL del PDF
+    url_pdf = page.locator(PDF_LOCATOR).get_attribute("href")
+
+    return url_pdf
+
 # Declaramos la funcion principal de nuestro script
 def main():
 

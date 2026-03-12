@@ -162,6 +162,10 @@ def scrapear_detalle(page, url_detalle):
 
     return url_pdf
 
+
+# Definimos la funcion que va encargarse de la paginacion 
+
+
 # Declaramos la funcion principal de nuestro script
 def main():
 
@@ -179,6 +183,12 @@ def main():
   
         # Eperamos a que cargue los elementos que necesitamos para obtener los datos
         page.locator(FATHER_LOCATOR).first.wait_for(state="visible")
+
+         # Probamos scrapear_listado y mostramos los resultados
+        resultados = scrapear_listado(page)
+
+        for r in resultados:
+            print(r)
 
         # Pagina cargada correctamente
         print("Página cargada correctamente")           

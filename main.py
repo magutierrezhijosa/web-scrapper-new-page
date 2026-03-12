@@ -18,6 +18,8 @@ import json
 # Importamos la libreria de os
 import os
 
+# Importamos la libreria de csv
+import csv
 
 ##########################################################
 #                     CONSTANTES                         #
@@ -47,10 +49,13 @@ TITLE_LOCATOR = "h3.h3 a"
 DATE_LOCATOR = "span.post-date"
 
 # Localizazdor de la etiqueta donde vamos a encontrar la URL_PDF
-PDF_LOCATOR = "a.button.small.download.document-inline"
+PDF_LOCATOR = "a.button.small.download.document-inline[href*='.pdf']"
 
-# Localizador del boton Download
+# Localizador Tipo A del boton Download
 DOWNLOAD_LOCATOR = "a.webform-dialog.button"
+
+# Localizador Tipo B - solo enlaces directos a PDF
+DIRECT_PDF_LOCATOR = "a.button.offsite[href*='.pdf']"
 
 # Localizador del botón "Continuar sin loggearse"
 SKIP_LOGIN_LOCATOR = "a#skip-registration"
@@ -149,18 +154,39 @@ def scrapear_detalle(page, url_detalle):
     page.goto(url_detalle, wait_until="domcontentloaded")
     page.wait_for_timeout(2000)
 
+    # Comprobamos si es de tipo B Directo el boton DOWNLOAD
+    if page.locator(DIRECT_PDF_LOCATOR).count() > 0:
+        url_pdf = page.locator(DIRECT_PDF_LOCATOR).first.get_attribute("href")
+        return url_pdf
+    
+    # Si no , es tipo A (modal con formulario)
+    # Comprobamos que hay boton de DOWNLOAD
+    if page.locator(DOWNLOAD_LOCATOR).count() == 0:
+        print(f"⚠️  No se encontró botón Download en: {url_detalle}")
+        return None
+    
     # Hacemos click en el boton de DOWNLOAD
     page.locator(DOWNLOAD_LOCATOR).click()
     page.wait_for_timeout(2000)
 
+    # Comprobamos si hay Boton de SKIP_LOGIN
+    if page.locator(SKIP_LOGIN_LOCATOR).count() == 0:
+        print(f"⚠️  No se encontró botón Skip en: {url_detalle}")
+        return None
+    
     # Hacemos click en "No thanks. Proceed to download." para saltar el login
     page.locator(SKIP_LOGIN_LOCATOR).click()
 
+    # Comprobamos que haya URL del PDF antes de acceder a la data
+    if page.locator(PDF_LOCATOR).count() == 0:
+        print(f"⚠️  No se encontró PDF en: {url_detalle}")
+        return None
+
     # Extraemos la URL del PDF
-    url_pdf = page.locator(PDF_LOCATOR).wait_for(state="visible")
+    page.locator(PDF_LOCATOR).first.wait_for(state="visible")
     page.wait_for_timeout(3000)
 
-    url_pdf = page.locator(PDF_LOCATOR).get_attribute("href")
+    url_pdf = page.locator(PDF_LOCATOR).first.get_attribute("href")
 
     return url_pdf
 
@@ -176,8 +202,16 @@ def scrapear_todas_las_paginas(page):
     # Declaramos la variable qque sigue el conteo de la paginacion
     numero_pagina = 0
 
+    # Cambia esto en scrapear_todas_las_paginas para limitar las páginas en pruebas
+    MAX_PAGINAS = 2  # Cambia a None para scrappear todo
+
     # Creamos un buclee While que mientras encuentra elemento los scrapea sino para y al final de cada iteracion incrementa el numero de pagina
     while True:
+
+        # Limite de paginas para pruebas
+        if MAX_PAGINAS and numero_pagina >= MAX_PAGINAS:
+            print(f"✅ Límite de {MAX_PAGINAS} páginas alcanzado.")
+            break
 
         # Mostramos en consola la pagina por la que vamos 
         print(f"📄 Scrapeando página {numero_pagina}...")
@@ -214,6 +248,8 @@ def scrapear_todas_las_paginas(page):
 
     return todos_los_resultados
 
+
+
 # Declaramos la funcion principal de nuestro script
 def main():
 
@@ -232,10 +268,11 @@ def main():
         # Eperamos a que cargue los elementos que necesitamos para obtener los datos
         page.locator(FATHER_LOCATOR).first.wait_for(state="visible")
 
-         # Probamos scrapear_detalle y mostramos los resultados
-        url_pdf = scrapear_detalle(page,"https://www.wri.org/research/exploring-productivity-and-climate-change-mitigation-potential-transitions-pasture")
+        # Probamos con las 2 primeras páginas
+        resultados = scrapear_todas_las_paginas(page)
 
-        print(f"URL PDF: {url_pdf}")
+        for r in resultados:
+            print(r)
 
         # Pagina cargada correctamente
         print("Página cargada correctamente")           

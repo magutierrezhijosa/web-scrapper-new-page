@@ -37,6 +37,12 @@ CSV_HEADERS = ["Título", "Fecha", "URL_PDF"]
 # Constante donde vamos a guardar las cookies
 COOKIES_FILE = "cookies.json"
 
+# Nombre del archivo CSV donde guardaremos los resultados
+CSV_FILE = "resultados.csv"
+
+# Ruta  para poder ejecutar correctamente el .exe de CAMOUFOX
+CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
+
 ######################## LOCALIZADORES ###################
 
 # Localizador padre que engloba todos los elementos que queremos scrapear
@@ -60,7 +66,7 @@ DIRECT_PDF_LOCATOR = "a.button.offsite[href*='.pdf']"
 # Localizador del botón "Continuar sin loggearse"
 SKIP_LOGIN_LOCATOR = "a#skip-registration"
 
-CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
+
 
 ##########################################################
 #                     FUNCIONES                          #
@@ -248,7 +254,26 @@ def scrapear_todas_las_paginas(page):
 
     return todos_los_resultados
 
+# Definimos la funcion que va a encargarse de guardar los datos en un CSV
+def guardar_csv(resultados):
 
+    # Abrimos el archivo CSV /en modo escritura "w"/newline="" (evita  que se agregen lineas en blanco/con utf-8 para aceptar tildes y n)
+    with open(CSV_FILE, "w", newline="", encoding="utf-8") as f:
+
+        # Creamos el escritos CSV
+        writer = csv.DictWriter(f,fieldnames=CSV_HEADERS)
+
+        # Escribimos la fila del encabezado
+        writer.writeheader()
+
+        # Recorremos los resultados y escribimos cada fila
+        for resultado in resultados:
+            writer.writerow({
+                "Título": resultado["titulo"],
+                "Fecha": resultado["fecha"],
+                "URL_PDF":resultado["url_pdf"]
+
+            })
 
 # Declaramos la funcion principal de nuestro script
 def main():
@@ -270,6 +295,9 @@ def main():
 
         # Probamos con las 2 primeras páginas
         resultados = scrapear_todas_las_paginas(page)
+
+        # Guardamos los resultados en CSV
+        guardar_csv(resultados)
 
         for r in resultados:
             print(r)

@@ -155,9 +155,11 @@ def scrapear_detalle(page, url_detalle):
 
     # Hacemos click en "No thanks. Proceed to download." para saltar el login
     page.locator(SKIP_LOGIN_LOCATOR).click()
-    page.wait_for_timeout(2000)
 
     # Extraemos la URL del PDF
+    url_pdf = page.locator(PDF_LOCATOR).wait_for(state="visible")
+    page.wait_for_timeout(3000)
+
     url_pdf = page.locator(PDF_LOCATOR).get_attribute("href")
 
     return url_pdf
@@ -184,11 +186,10 @@ def main():
         # Eperamos a que cargue los elementos que necesitamos para obtener los datos
         page.locator(FATHER_LOCATOR).first.wait_for(state="visible")
 
-         # Probamos scrapear_listado y mostramos los resultados
-        resultados = scrapear_listado(page)
+         # Probamos scrapear_detalle y mostramos los resultados
+        url_pdf = scrapear_detalle(page,"https://www.wri.org/research/exploring-productivity-and-climate-change-mitigation-potential-transitions-pasture")
 
-        for r in resultados:
-            print(r)
+        print(f"URL PDF: {url_pdf}")
 
         # Pagina cargada correctamente
         print("Página cargada correctamente")           

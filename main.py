@@ -23,14 +23,18 @@ import os
 #                     CONSTANTES                         #
 ##########################################################
 
+# Url base que vamos a usar para ir a la pagina en detalle de cada elemento
+BASE_URL = "https://www.wri.org"
+
 # Url donde vamos a empezar a realizar el scraping
-URL_TO_SCRAP  = "https://www.wri.org/resources/type/research-65?query=&sort_by=created"
+URL_TO_SCRAP  = "https://www.wri.org/resources/type/research-65?query=&sort_by=created&page={}"
 
 # Encabezados de las columnas de nuestro futuro archivo CSV
 CSV_HEADERS = ["Título", "Fecha", "URL_PDF"]
 
 # Constante donde vamos a guardar las cookies
 COOKIES_FILE = "cookies.json"
+
 ######################## LOCALIZADORES ###################
 
 # Localizador padre que engloba todos los elementos que queremos scrapear
@@ -43,7 +47,13 @@ TITLE_LOCATOR = "h3.h3 a"
 DATE_LOCATOR = "span.post-date"
 
 # Localizazdor de la etiqueta donde vamos a encontrar la URL_PDF
-PDF_LOCATOR = ""
+PDF_LOCATOR = "a.button.small.download.document-inline"
+
+# Localizador del boton Download
+DOWNLOAD_LOCATOR = "a.webform-dialog.button"
+
+# Localizador del botón "Continuar sin loggearse"
+SKIP_LOGIN_LOCATOR = "a#skip-registration"
 
 CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
 
@@ -56,7 +66,7 @@ def guardar_cookies(browser):
 
     """Abre el navegador , espera a que pases el captcha manualmente y guarda la cookies """
     page = browser.new_page()
-    page.goto(URL_TO_SCRAP, wait_until="domcontentloaded")
+    page.goto(URL_TO_SCRAP.format(0), wait_until="domcontentloaded")
 
     print("⚠️  Pasa el captcha manualmente en el navegador...")
     print("⚠️  Cuando la página haya cargado completamente pulsa ENTER aquí.")
@@ -93,7 +103,7 @@ def cargar_cookies(browser):
     page.wait_for_timeout(2000)
 
     # Navegamos a la pagina que queremos hacer el Scraping 
-    page.goto(URL_TO_SCRAP, wait_until="domcontentloaded")
+    page.goto(URL_TO_SCRAP.format(0), wait_until="domcontentloaded")
 
     # Pausa para que la pagina le de tiempo a renderizarse
     page.wait_for_timeout(3000)

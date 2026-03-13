@@ -43,6 +43,9 @@ CSV_FILE = "resultados.csv"
 # Ruta  para poder ejecutar correctamente el .exe de CAMOUFOX
 CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
 
+# Cambiamos la pagina de inicion paara continuar
+PAGINA_INICIO = 21
+
 ######################## LOCALIZADORES ###################
 
 # Localizador padre que engloba todos los elementos que queremos scrapear
@@ -180,8 +183,9 @@ def scrapear_detalle(page, url_detalle):
         print(f"⚠️  No se encontró botón Download en: {url_detalle}")
         return None
     
-    # Hacemos click en el boton de DOWNLOAD
-    page.locator(DOWNLOAD_LOCATOR).click()
+    download_button = page.locator(DOWNLOAD_LOCATOR).first
+    download_button.wait_for(state="visible")
+    download_button.click(no_wait_after=True,timeout=60000)
     page.wait_for_timeout(2000)
 
     # Comprobamos si hay Boton de SKIP_LOGIN
@@ -190,13 +194,15 @@ def scrapear_detalle(page, url_detalle):
         return None
     
     # Hacemos click en "No thanks. Proceed to download." para saltar el login
-    page.locator(SKIP_LOGIN_LOCATOR).click()
+    skip_button = page.locator(SKIP_LOGIN_LOCATOR).first
 
-    # Comprobamos que haya URL del PDF antes de acceder a la data
-    if page.locator(PDF_LOCATOR).count() == 0:
-        print(f"⚠️  No se encontró PDF en: {url_detalle}")
+    if skip_button.count() == 0:
+        print(f"⚠️  No se encontró botón Skip en: {url_detalle}")
         return None
 
+    skip_button.wait_for(state="visible")
+    skip_button.click(timeout=60000, force=True)
+    
     # Extraemos la URL del PDF
     page.locator(PDF_LOCATOR).first.wait_for(state="visible")
     page.wait_for_timeout(3000)
@@ -215,7 +221,7 @@ def scrapear_todas_las_paginas(page):
     todos_los_resultados = []
 
     # Declaramos la variable qque sigue el conteo de la paginacion
-    numero_pagina = 0
+    numero_pagina = PAGINA_INICIO
 
     # Cambia esto en scrapear_todas_las_paginas para limitar las páginas en pruebas
     MAX_PAGINAS = None  # Cambia a None para scrappear todo
@@ -259,21 +265,31 @@ def scrapear_todas_las_paginas(page):
             # Añadimos el resultado completo a la lista total
             todos_los_resultados.append(resultado)
 
+        
+        # Guardamos los resultados de esta página inmediatamente
+        guardar_csv(resultados_pagina)
+        print(f"💾 Página {numero_pagina} guardada en CSV ({len(resultados_pagina)} elementos)")
+
         numero_pagina += 1
 
     return todos_los_resultados
 
 # Definimos la funcion que va a encargarse de guardar los datos en un CSV
-def guardar_csv(resultados):
+def guardar_csv(resultados , modo="a"):
+
+    # Comprobamos si el archivo ya existe para no escribir el encabezado dos veces
+    archivo_existe = os.path.exists(CSV_FILE)
+
 
     # Abrimos el archivo CSV /en modo escritura "w"/newline="" (evita  que se agregen lineas en blanco/con utf-8 para aceptar tildes y n)
-    with open(CSV_FILE, "w", newline="", encoding="utf-8") as f:
+    with open(CSV_FILE, modo , newline="", encoding="utf-8") as f:
 
         # Creamos el escritos CSV
         writer = csv.DictWriter(f,fieldnames=CSV_HEADERS)
 
-        # Escribimos la fila del encabezado
-        writer.writeheader()
+        # Solo escribimos el encabezado si el archivo es nuevo
+        if not archivo_existe or modo == "w":
+            writer.writeheader()
 
         # Recorremos los resultados y escribimos cada fila
         for resultado in resultados:
@@ -290,6 +306,11 @@ def main():
     # Declaramos el Context Manager (with)
     with Camoufox(headless=False, executable_path=CAMOUFOX_PATH) as browser:
 
+        # Borramos el CSV anterior para empezar limpio
+        # if os.path.exists(CSV_FILE):
+        #     os.remove(CSV_FILE)
+        #     print(f"🗑️  CSV anterior eliminado, empezando desde cero.")
+
         # Si no hay COOKIES guardadas las generamos manualmente
         if not os.path.exists(COOKIES_FILE):
             
@@ -304,9 +325,6 @@ def main():
 
         # Probamos con las 2 primeras páginas
         resultados = scrapear_todas_las_paginas(page)
-
-        # Guardamos los resultados en CSV
-        guardar_csv(resultados)
 
         # Pagina cargada correctamente
         print(f"✅ Script finalizado. {len(resultados)} elementos guardados en {CSV_FILE}")       

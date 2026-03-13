@@ -44,7 +44,7 @@ CSV_FILE = "resultados.csv"
 CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
 
 # Cambiamos la pagina de inicion paara continuar
-PAGINA_INICIO = 21
+PAGINA_INICIO = 35
 
 ######################## LOCALIZADORES ###################
 
@@ -203,13 +203,22 @@ def scrapear_detalle(page, url_detalle):
     skip_button.wait_for(state="visible")
     skip_button.click(timeout=60000, force=True)
     
-    # Extraemos la URL del PDF
-    page.locator(PDF_LOCATOR).first.wait_for(state="visible")
-    page.wait_for_timeout(3000)
+    # Esperamos más tiempo a que el modal se cierre y aparezca el PDF
+    page.wait_for_timeout(5000)  # ← sube de 3000 a 5000
 
-    url_pdf = page.locator(PDF_LOCATOR).first.get_attribute("href")
+    # Si el PDF no aparece, continuamos sin romper el script
+    try:
+        page.locator(PDF_LOCATOR).first.wait_for(state="visible", timeout=60000)
+        url_pdf = page.locator(PDF_LOCATOR).first.get_attribute("href")
 
-    return url_pdf
+        return url_pdf
+    
+    except:
+
+        print(f"⚠️  PDF no apareció tras skip en: {url_detalle}")
+       
+        return None
+    
 
 
 # Definimos la funcion que va encargarse de la paginacion 

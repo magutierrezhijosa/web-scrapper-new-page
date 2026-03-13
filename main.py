@@ -44,7 +44,7 @@ CSV_FILE = "resultados.csv"
 CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
 
 # Cambiamos la pagina de inicion paara continuar
-PAGINA_INICIO = 35
+PAGINA_INICIO = 52
 
 ######################## LOCALIZADORES ###################
 
@@ -201,7 +201,11 @@ def scrapear_detalle(page, url_detalle):
         return None
 
     skip_button.wait_for(state="visible")
-    skip_button.click(timeout=60000, force=True)
+    try:
+        skip_button.click(timeout=60000, force=True)
+    except:
+        print(f"⚠️  No se pudo hacer click en skip en: {url_detalle}")
+        return None
     
     # Esperamos más tiempo a que el modal se cierre y aparezca el PDF
     page.wait_for_timeout(5000)  # ← sube de 3000 a 5000

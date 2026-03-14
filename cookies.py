@@ -26,7 +26,7 @@ def guardar_cookies(browser):
     2.-Espera a que el usuario pase el captcha 
     manualmente 
     3.Guarda las cookies en un archivo JSON.
-    
+
     """
     page = browser.new_page()
     page.goto(URL_LISTADO.format(0), wait_until="domcontentloaded")
@@ -63,7 +63,14 @@ def cargar_cookies(browser):
     page.goto(URL_LISTADO.format(0), wait_until="domcontentloaded")
     page.wait_for_timeout(3000)
 
-    return page
+     # Comprobamos si las cookies siguen siendo válidas
+    try:
+        page.locator(FATHER_LOCATOR).first.wait_for(state="visible", timeout=5000)
+        print("✅ Cookies cargadas y válidas.")
+        return page
+    
+
+    
 
 
 def cookies_existen():

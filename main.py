@@ -1,11 +1,8 @@
 
 """
-        Pruebas que hice para evitar el anti-bot
-        1- Probar con el perfil de Playright en el navegador 
-        2- Probar con el perfil prestablecido diferente al de Playright
-        3- Probar con la libreria de Camoufox 
-        ? Probar a pedir a la API que me de la  informacion directamente
-    
+       
+        Script para hacer web scraping con Camoufox y guardando los datos : 
+        TITULO,FECHA,URL_PDF en un archivo CSV para pstteriormente ser usado
 
 
 """
@@ -39,7 +36,7 @@ CSV_FILE = "resultados.csv"
 CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
 
 # Cambiamos la pagina de inicion paara continuar
-PAGINA_INICIO = 52
+PAGINA_INICIO = 0
 
 ##########################################################
 #                CONSTANTES SEGUN LA PAGINA              #
@@ -53,7 +50,7 @@ URL_TO_SCRAP  = "https://www.wri.org/resources/type/research-65?query=&sort_by=c
 
 
 ##########################################################
-#                    LOCALIZADORES                       #
+#            LOCALIZADORES  SEGUN LA PAGINA              #
 ##########################################################
 
 # Localizador padre que engloba todos los elementos que queremos scrapear
@@ -103,7 +100,6 @@ def guardar_cookies(browser):
 
     print("✅ Cookies guardadas correctamente.")
     return page
-
 
 # Definimos la funcion que cargara las COOKIES para que no nos vuelva a pedir el captcha en futuras ocasiones
 def cargar_cookies(browser):
@@ -231,8 +227,6 @@ def scrapear_detalle(page, url_detalle):
        
         return None
     
-
-
 # Definimos la funcion que va encargarse de la paginacion 
 def scrapear_todas_las_paginas(page):
 

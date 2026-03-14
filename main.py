@@ -18,62 +18,6 @@ import os
 # Importamos la libreria de csv
 import csv
 
-##########################################################
-#                     CONSTANTES                         #
-##########################################################
-
-
-# Encabezados de las columnas de nuestro futuro archivo CSV
-CSV_HEADERS = ["Título", "Fecha", "URL_PDF"]
-
-# Constante donde vamos a guardar las cookies
-COOKIES_FILE = "cookies.json"
-
-# Nombre del archivo CSV donde guardaremos los resultados
-CSV_FILE = "resultados.csv"
-
-# Ruta  para poder ejecutar correctamente el .exe de CAMOUFOX
-CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\Local\camoufox\camoufox\Cache\camoufox.exe"
-
-# Cambiamos la pagina de inicion paara continuar
-PAGINA_INICIO = 0
-
-##########################################################
-#                CONSTANTES SEGUN LA PAGINA              #
-##########################################################
-
-# Url base que vamos a usar para ir a la pagina en detalle de cada elemento
-BASE_URL = "https://www.wri.org"
-
-# Url donde vamos a empezar a realizar el scraping
-URL_TO_SCRAP  = "https://www.wri.org/resources/type/research-65?query=&sort_by=created&page={}"
-
-
-##########################################################
-#            LOCALIZADORES  SEGUN LA PAGINA              #
-##########################################################
-
-# Localizador padre que engloba todos los elementos que queremos scrapear
-FATHER_LOCATOR = "div.ds-1col.clearfix.search-results-container.margin-bottom-sm"
-
-# Localizador de la etiqueta donde se va a encontrar el TITULO
-TITLE_LOCATOR = "h3.h3 a"
-
-# Localizador de la etiqueta donde vamos a encontrar la FECHA
-DATE_LOCATOR = "span.post-date"
-
-# Localizazdor de la etiqueta donde vamos a encontrar la URL_PDF
-PDF_LOCATOR = "a.button.small.download.document-inline[href*='.pdf']"
-
-# Localizador Tipo A del boton Download
-DOWNLOAD_LOCATOR = "a.webform-dialog.button"
-
-# Localizador Tipo B - solo enlaces directos a PDF
-DIRECT_PDF_LOCATOR = "a.button.offsite[href*='.pdf']"
-
-# Localizador del botón "Continuar sin loggearse"
-SKIP_LOGIN_LOCATOR = "a#skip-registration"
-
 
 
 ##########################################################

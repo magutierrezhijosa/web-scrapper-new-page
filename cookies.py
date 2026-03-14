@@ -13,7 +13,7 @@ import json
 import os
 
 # Importamos las constantes que necesitamos de config.py
-from config import COOKIES_FILE, URL_LISTADO
+from config import COOKIES_FILE, URL_LISTADO , FATHER_LOCATOR
 
 
 ##########################################################
@@ -70,7 +70,11 @@ def cargar_cookies(browser):
         return page
     
 
-    
+    except:
+        # Las cookies han caducado, las borramos y pedimos nuevas
+        print("⚠️  Las cookies han caducado, vuelve a pasar el captcha.")
+        os.remove(COOKIES_FILE)
+        return guardar_cookies(browser)
 
 
 def cookies_existen():

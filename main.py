@@ -25,11 +25,6 @@ import csv
 #                     CONSTANTES                         #
 ##########################################################
 
-# Url base que vamos a usar para ir a la pagina en detalle de cada elemento
-BASE_URL = "https://www.wri.org"
-
-# Url donde vamos a empezar a realizar el scraping
-URL_TO_SCRAP  = "https://www.wri.org/resources/type/research-65?query=&sort_by=created&page={}"
 
 # Encabezados de las columnas de nuestro futuro archivo CSV
 CSV_HEADERS = ["Título", "Fecha", "URL_PDF"]
@@ -46,7 +41,20 @@ CAMOUFOX_PATH = r"C:\Users\migue\AppData\Local\Packages\PythonSoftwareFoundation
 # Cambiamos la pagina de inicion paara continuar
 PAGINA_INICIO = 52
 
-######################## LOCALIZADORES ###################
+##########################################################
+#                CONSTANTES SEGUN LA PAGINA              #
+##########################################################
+
+# Url base que vamos a usar para ir a la pagina en detalle de cada elemento
+BASE_URL = "https://www.wri.org"
+
+# Url donde vamos a empezar a realizar el scraping
+URL_TO_SCRAP  = "https://www.wri.org/resources/type/research-65?query=&sort_by=created&page={}"
+
+
+##########################################################
+#                    LOCALIZADORES                       #
+##########################################################
 
 # Localizador padre que engloba todos los elementos que queremos scrapear
 FATHER_LOCATOR = "div.ds-1col.clearfix.search-results-container.margin-bottom-sm"

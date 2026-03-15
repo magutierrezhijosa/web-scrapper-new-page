@@ -13,7 +13,7 @@ import json
 import os
 
 # Importamos las constantes que necesitamos de config.py
-from config import COOKIES_FILE, URL_LISTADO , FATHER_LOCATOR
+from config import COOKIES_FILE, URL_LISTADO , ELEMENT_SCRAP_LOCATOR
 
 
 ##########################################################
@@ -65,7 +65,7 @@ def cargar_cookies(browser):
 
      # Comprobamos si las cookies siguen siendo válidas
     try:
-        page.locator(FATHER_LOCATOR).first.wait_for(state="visible", timeout=5000)
+        page.locator(ELEMENT_SCRAP_LOCATOR ).first.wait_for(state="visible", timeout=5000)
         print("✅ Cookies cargadas y válidas.")
         return page
     

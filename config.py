@@ -49,7 +49,7 @@ URL_LISTADO = "https://www.wri.org/resources/type/research-65?query=&sort_by=cre
 # -- Listado --
 
 # Contenedor de cada resultado en el listado
-FATHER_LOCATOR = "div.ds-1col.clearfix.search-results-container.margin-bottom-sm"
+ELEMENT_SCRAP_LOCATOR = "div.ds-1col.clearfix.search-results-container.margin-bottom-sm"
 
 # Título del resultado (también contiene el href a la página de detalle)
 TITLE_LOCATOR = "h3.h3 a"

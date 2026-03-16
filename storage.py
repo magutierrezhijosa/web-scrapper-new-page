@@ -44,4 +44,17 @@ def guardar_csv(resultados,modo="a"):
 
             writer.writeheader()
 
-        
+        # Recorremos los resultados y agregamos los datos recogidos por le script 
+        # a nuestro archivo CSV
+        for resultado in resultados:
+
+            writer.writerow({
+
+                "Titulo": resultado["titulo"],
+                "Fecha": resultado["fecha"],
+                "URL_PDF": resultado["url_pdf"]
+
+            })
+
+
+            

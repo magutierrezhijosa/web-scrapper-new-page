@@ -57,4 +57,16 @@ def guardar_csv(resultados,modo="a"):
             })
 
 
-            
+# Definimos la funcion que eliminara el archivo CSV si es necesario empeezar de cero el scraping de una nueva web
+def borrar_csv():
+
+    """
+    ELimina el archivo CSV para empezar desde cero
+    """        
+
+    # Comprobamos is existe el archivo CSV
+    if os.path.exists(CSV_FILE):
+
+        # Lo borramos con estta liena
+        os.remove(CSV_FILE)    
+        print(f"🗑️  CSV anterior eliminado, empezando desde cero.")

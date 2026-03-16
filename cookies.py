@@ -56,11 +56,17 @@ def cargar_cookies(browser):
 
     page = browser.new_page()
 
-    # IMPORTANTE: inyectar cookies ANTES de navegar
+     ######## IMPORTANTE CARGAR LAS COOKIES ANTES DE NAVEGAR ######
+    # Injectamos las COOKIES en el contexto del navegador 
     page.context.add_cookies(cookies)
+
+    # Esperamos 2 segundos para aseguurar que la s COOKIES se han cargado correctamente
     page.wait_for_timeout(2000)
 
+    # Navegamos a la pagina que queremos hacer el Scraping 
     page.goto(URL_LISTADO.format(0), wait_until="domcontentloaded")
+    
+    # Pausa para que la pagina le de tiempo a renderizarse
     page.wait_for_timeout(3000)
 
      # Comprobamos si las cookies siguen siendo válidas

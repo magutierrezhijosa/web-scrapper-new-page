@@ -22,7 +22,7 @@ COOKIES_FILE = "cookies.json"
 CSV_FILE = "resultados.csv"
 
 # Encabezados del CSV (deben coincidir con las claves que devuelve el scraper)
-CSV_HEADERS = ["Título", "Fecha", "URL_PDF"]
+CSV_HEADERS = ["Titulo", "Fecha", "URL_PDF"]
 
 # Página desde la que empezar (0 = desde el principio)
 PAGINA_INICIO = 0
